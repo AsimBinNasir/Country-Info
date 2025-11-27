@@ -1,9 +1,16 @@
 import React from 'react'
-
+import { useNavigate } from 'react-router-dom';
 const CountryCard = ({ country }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/country/${country.name.common}`);
+  }
   return (
-    <div className='w-full h-auto rounded-lg bg-white drop-shadow-xl cursor-pointer'>
-      
+    <div
+      className='w-full h-auto rounded-lg bg-white drop-shadow-xl cursor-pointer'
+      onClick={handleClick}>
+
       <div className='w-full h-50'>
         <img
           src={country.flags?.svg || 'https://via.placeholder.com/300x200?text=No+Flag'}
@@ -29,7 +36,7 @@ const CountryCard = ({ country }) => {
           </p>
         </div>
       </div>
-      
+
     </div>
   )
 }

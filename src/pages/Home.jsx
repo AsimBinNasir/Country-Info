@@ -9,16 +9,29 @@ const Home = () => {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState(''); // '' means All Region
+  const [selectedRegionLabel, setSelectedRegionLabel] = useState('All Region'); // label for dropdown
+
   const countriesPerPage = 12;
 
   useEffect(() => {
     const getCountries = async () => {
-      const data = await fetchCountryData();
+      setLoading(true);
+
+      let data = await fetchCountryData(searchQuery);
+
+      // Filter by region
+      if (selectedRegion) {
+        data = data.filter(c => c.region === selectedRegion);
+      }
+
       setCountries(data);
       setLoading(false);
     };
+
     getCountries();
-  }, []);
+  }, [searchQuery, selectedRegion]);
 
   if (loading) {
     return <div className='min-h-screen flex justify-center items-center'>Loading...</div>;
@@ -44,8 +57,9 @@ const Home = () => {
     <div className='min-h-screen pb-25 bg-gray-50'>
       <Header />
       <div className='px-25 flex justify-between items-center my-10'>
-        <SearchBar />
-        <FilterRegion />
+        <SearchBar setSearchQuery={setSearchQuery} />
+        <FilterRegion selectedRegionLabel={selectedRegionLabel} setSelectedRegion={setSelectedRegion} setSelectedRegionLabel={setSelectedRegionLabel}/>
+
       </div>
       <div className='grid grid-cols-4 gap-20 px-25'>
         {currentCountries.map((country, index) => (
