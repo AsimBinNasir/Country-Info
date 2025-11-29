@@ -1,8 +1,16 @@
 export const fetchCountryData = async (query) => {
   try {
-    const endpoint = query
-      ? `https://restcountries.com/v3.1/name/${query}`
-      : `https://restcountries.com/v3.1/all?fields=name,capital,region,flags,population`;
+    let endpoint = "";
+     if (!query) {
+      endpoint =
+        "https://restcountries.com/v3.1/all?fields=name,capital,region,subregion,tld,currencies,languages,borders,flags,population";
+    } 
+    else if (query.length === 3) {
+      endpoint = `https://restcountries.com/v3.1/alpha/${query}`;
+    } 
+    else {
+      endpoint = `https://restcountries.com/v3.1/name/${query}`;
+    }
 
     const response = await fetch(endpoint);
 

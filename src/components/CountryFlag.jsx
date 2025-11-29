@@ -6,7 +6,7 @@ const CountryFlag = ({country}) => {
       <img
         src={country.flags?.svg || 'https://via.placeholder.com/600x400?text=No+Flag'}
         alt={`${country.name?.common || 'Unknown'} flag`}
-        className="w-full h-auto object-cover all-sides-shadow"
+        className="w-full h-auto object-cover all-sides-shadow-light"
       />
     </div>
   )

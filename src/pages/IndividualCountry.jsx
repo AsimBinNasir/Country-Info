@@ -24,7 +24,7 @@ const IndividualCountry = () => {
       <Header />
       <div className='px-25 flex justify-between items-center my-17'>
         <button
-          className="px-8 py-2 bg-white rounded-lg all-sides-shadow font-nunitosans font-medium text-base text-gray-950 flex items-center
+          className="px-9 py-2 bg-white rounded-lg all-sides-shadow-light font-nunitosans font-medium text-base text-gray-950 flex items-center
              transform transition-transform duration-200 active:scale-90"
           onClick={() => window.history.back()}
         >
