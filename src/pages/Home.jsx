@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import SearchBar from '../components/SearchBar'
 import FilterRegion from '../components/FilterRegion'
 import CountryCard from '../components/CountryCard'
+import LoadingPage from '../components/LoadingPage'
 import { fetchCountryData } from '../services/FetchCountry'
 
 const Home = () => {
@@ -34,7 +35,7 @@ const Home = () => {
   }, [searchQuery, selectedRegion]);
 
   if (loading) {
-    return <div className='min-h-screen flex justify-center items-center'>Loading...</div>;
+    return <LoadingPage />;
   }
 
   // Calculate the current countries to show
@@ -56,12 +57,12 @@ const Home = () => {
   return (
     <div className='min-h-screen pb-25 bg-gray-50'>
       <Header />
-      <div className='px-25 flex justify-between items-center my-10'>
+      <div className='px-6 sm:px-10 md:px-12 lg:px-15 xl:px-25 flex flex-col gap-10 md:flex-row sm:justify-between items-start md:items-center my-10'>
         <SearchBar setSearchQuery={setSearchQuery} />
         <FilterRegion selectedRegionLabel={selectedRegionLabel} setSelectedRegion={setSelectedRegion} setSelectedRegionLabel={setSelectedRegionLabel}/>
 
       </div>
-      <div className='grid grid-cols-4 gap-20 px-25'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 sm:gap-10 md:grid-cols-3 md:gap-10 xl:grid-cols-4 gap-20 px-6 sm:px-10 md:px-12 lg:px-15 xl:px-25 '>
         {currentCountries.map((country, index) => (
           <CountryCard key={country.cca2 || country.cca3 || country.name.common || index} country={country} />
         ))}

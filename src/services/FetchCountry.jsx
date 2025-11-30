@@ -20,7 +20,7 @@ export const fetchCountryData = async (query) => {
 
     if (data.response === false)
 
-      // When searching by name → manually extract only needed fields
+      
       if (query) {
         data = data.map(c => ({
           name: c.name,

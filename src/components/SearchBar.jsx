@@ -19,7 +19,7 @@ const SearchBar = ({ setSearchQuery }) => {
   };
 
   return (
-    <div className='relative w-150 h-auto'>
+    <div className='relative w-full md:max-w-[55%] h-auto'>
       <input
         type="text"
         placeholder="Search for a country..."

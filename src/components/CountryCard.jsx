@@ -12,7 +12,7 @@ const CountryCard = ({ country }) => {
   onClick={handleClick}
 >
   {/* Image container */}
-  <div className='w-full h-40 drop-shadow overflow-hidden rounded-t-lg'>
+  <div className='w-full aspect-3/2 drop-shadow-md overflow-hidden rounded-t-lg'>
     <img
       src={country.flags?.svg || 'https://via.placeholder.com/300x200?text=No+Flag'}
       alt={`${country.name?.common || 'Unknown'} flag`}
@@ -21,19 +21,19 @@ const CountryCard = ({ country }) => {
   </div>
 
   {/* Card content */}
-  <div className='pt-9 pb-10 px-7 flex flex-col gap-4'>
-    <p className='font-nunitosans font-extrabold text-lg text-gray-950'>
+  <div className='pt-9 pb-10 px-6 md:px-4 lg:px-6 flex flex-col gap-4'>
+    <p className='font-nunitosans font-extrabold text-base text-gray-950'>
       {country.name?.common || "Unknown"}
     </p>
 
     <div className='flex flex-col gap-1'>
-      <p className='font-nunitosans font-bold text-base text-gray-950'>
+      <p className='font-nunitosans font-bold text-sm text-gray-950'>
         Population: <span className='font-normal'>{country.population?.toLocaleString() || "N/A"}</span>
       </p>
-      <p className='font-nunitosans font-bold text-base text-gray-950'>
+      <p className='font-nunitosans font-bold text-sm text-gray-950'>
         Region: <span className='font-normal'>{country.region || "N/A"}</span>
       </p>
-      <p className='font-nunitosans font-bold text-base text-gray-950'>
+      <p className='font-nunitosans font-bold text-sm text-gray-950'>
         Capital: <span className='font-normal'>{country.capital?.[0] || "N/A"}</span>
       </p>
     </div>
