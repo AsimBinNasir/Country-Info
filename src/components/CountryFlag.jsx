@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-const CountryFlag = ({country}) => {
+const CountryFlag = ({ country }) => {
   return (
     <div className='w-full'>
       <img
@@ -9,7 +9,7 @@ const CountryFlag = ({country}) => {
         className="w-full h-auto object-cover all-sides-shadow-light"
       />
     </div>
-  )
-}
+  );
+};
 
-export default CountryFlag
+export default CountryFlag;

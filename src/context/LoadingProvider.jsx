@@ -1,16 +1,21 @@
-import { createContext, useContext, useState } from "react";
-
-const LoadingContext = createContext();
+import React, { useState } from 'react';
+import LoadingPage from '../components/LoadingPage';
+import { LoadingContext } from './LoadingContext';
 
 export const LoadingProvider = ({ children }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <LoadingContext.Provider value={{ loading, setLoading, error, setError }}>
+    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+      {/* This conditional rendering ensures the loader sits on top 
+        of all other content when isLoading is true.
+      */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 bg-gray-50 dark:bg-blue-950 transition-colors duration-300">
+            <LoadingPage />
+        </div>
+      )}
       {children}
     </LoadingContext.Provider>
   );
 };
-
-export const useLoading = () => useContext(LoadingContext);

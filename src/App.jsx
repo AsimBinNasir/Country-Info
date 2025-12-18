@@ -9,7 +9,8 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/country/:countryName" element={<IndividualCountry />} />
-      <Route path="error" element={<ErrorPage />} /> 
+      <Route path="/error" element={<ErrorPage />} />
+      <Route path="*" element={<ErrorPage message="Page not found" />} /> 
     </Routes>
   )
 }
