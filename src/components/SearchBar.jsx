@@ -8,7 +8,7 @@ const SearchBar = ({ setSearchQuery }) => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setSearchQuery(inputValue.trim());
-    }, 1000);
+    }, 500);
 
     // Cleanup function: cancels the timer if the user types again before 1s is up
     return () => {
