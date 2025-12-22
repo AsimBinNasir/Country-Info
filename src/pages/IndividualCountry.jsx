@@ -5,38 +5,56 @@ import { fetchCountryData } from '../services/FetchCountry';
 import CountryFlag from '../components/CountryFlag';
 import CountryInfo from '../components/CountryInfo';
 import { useLoading } from '../hooks/useLoading';
+import { useAuth } from '../hooks/useAuth';
 
 const IndividualCountry = () => {
   const { countryName } = useParams();
   const navigate = useNavigate();
-  // Removed <Country | null>
-  const [country, setCountry] = useState(null);
+  const [country, setCountry] = useState(null); // Type annotation removed
   const { setIsLoading } = useLoading();
+  const { currentUser, loading: authLoading, setAuthModalOpen } = useAuth();
+
+  /**
+   * Route Guard: Redirect guests back to home and show login modal.
+   * This ensures that only authenticated users can view specific country details.
+   */
+  useEffect(() => {
+    if (!authLoading && !currentUser) {
+      setAuthModalOpen(true);
+      navigate('/', { replace: true });
+    }
+  }, [currentUser, authLoading, navigate, setAuthModalOpen]);
 
   useEffect(() => {
     const getCountry = async () => {
-      if (countryName) {
+      if (countryName && currentUser) {
         setIsLoading(true);
-        const data = await fetchCountryData(countryName);
-        
-        if (data && data.length > 0) {
-          setCountry(data[0]); 
-        } else {
-          // Navigate to error page if country not found
+        try {
+          const data = await fetchCountryData(countryName);
+          if (data && data.length > 0) {
+            setCountry(data[0]);
+          } else {
+            navigate('/error', { replace: true });
+          }
+        } catch (error) {
+          console.error("Failed to fetch country:", error);
           navigate('/error', { replace: true });
+        } finally {
+          setIsLoading(false);
         }
-        setIsLoading(false);
       }
     };
     getCountry();
-  }, [countryName, navigate, setIsLoading]);
+  }, [countryName, navigate, setIsLoading, currentUser]);
 
   const handleBack = () => {
     navigate('/');
   };
 
-  // Guard clause while waiting for data
-  if (!country) return <div className="min-h-screen bg-gray-50 dark:bg-blue-950" />;
+  // Prevent flicker or layout shift while checking auth or waiting for data
+  if (authLoading || !currentUser || !country) {
+    return <div className="min-h-screen bg-gray-50 dark:bg-blue-950" />;
+  }
 
   return (
     <div className="min-h-screen pb-25 bg-gray-50 dark:bg-blue-950 transition-colors duration-300">
@@ -52,10 +70,12 @@ const IndividualCountry = () => {
         </button>
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-15 xl:gap-35 px-6 sm:px-10 md:px-12 lg:px-15 xl:px-25 pb-10'>
+      <main className='grid grid-cols-1 lg:grid-cols-2 gap-15 xl:gap-35 px-6 sm:px-10 md:px-12 lg:px-15 xl:px-25 pb-10'>
         <CountryFlag country={country} />
-        <CountryInfo country={country} />
-      </div>
+        <div className="flex flex-col gap-10">
+          <CountryInfo country={country} />
+        </div>
+      </main>
     </div>
   );
 };

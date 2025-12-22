@@ -11,7 +11,6 @@ const ErrorPage = ({ message }) => {
       <Header />
       
       <div className="grow flex flex-col justify-center items-center px-6 text-center">
-        {/* Decorative Icon */}
         <div className="mb-8 text-6xl md:text-8xl text-blue-900 dark:text-white opacity-20">
           <FaExclamationTriangle />
         </div>

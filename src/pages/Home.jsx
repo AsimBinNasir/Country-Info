@@ -5,6 +5,7 @@ import FilterRegion from '../components/FilterRegion';
 import CountryCard from '../components/CountryCard';
 import { fetchCountryData } from '../services/FetchCountry';
 import { useLoading } from '../hooks/useLoading';
+import { useAuth } from '../hooks/useAuth';
 
 const Home = () => {
   const [countries, setCountries] = useState([]);
@@ -17,23 +18,31 @@ const Home = () => {
   
   const { isLoading, setIsLoading } = useLoading();
 
+  useAuth(); 
+
   const countriesPerPage = 12;
 
   useEffect(() => {
     const getCountries = async () => {
       setIsLoading(true);
-      setCurrentPage(1); // Reset to page 1 on new search
+      setCurrentPage(1); // Reset to page 1 on new search/filter
 
-      let data = await fetchCountryData(searchQuery);
+      try {
+        let data = await fetchCountryData(searchQuery);
 
-      // Filter by region
-      if (selectedRegion) {
-        data = data.filter(c => c.region === selectedRegion);
+        // Filter by region locally if a region is selected
+        if (selectedRegion) {
+          data = data.filter(c => c.region === selectedRegion);
+        }
+
+        setCountries(data);
+      } catch (error) {
+        console.error("Error loading countries:", error);
+        setCountries([]);
+      } finally {
+        setIsLoading(false);
+        setHasFetched(true);
       }
-
-      setCountries(data);
-      setIsLoading(false);
-      setHasFetched(true);
     };
 
     getCountries();
@@ -43,6 +52,7 @@ const Home = () => {
   const indexOfLastCountry = currentPage * countriesPerPage;
   const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
   const currentCountries = countries.slice(indexOfFirstCountry, indexOfLastCountry);
+
   const totalPages = Math.ceil(countries.length / countriesPerPage);
 
   const handlePrevPage = () => {
@@ -53,6 +63,9 @@ const Home = () => {
     setCurrentPage(prev => Math.min(prev + 1, totalPages));
   };
 
+  /**
+   * Resets the home state to default view.
+   */
   const handleResetHome = () => {
     setSearchQuery('');
     setSelectedRegion('');
@@ -65,8 +78,8 @@ const Home = () => {
     <div className='min-h-screen pb-25 bg-gray-50 dark:bg-blue-950 transition-colors duration-300'>
       <Header onHomeClick={handleResetHome} />
       
+      {/* Control Bar: Search and Filter */}
       <div className='px-6 sm:px-10 md:px-12 lg:px-15 xl:px-25 flex flex-col gap-10 md:flex-row sm:justify-between items-start md:items-center my-10'>
-        {/* Key forces SearchBar remount to clear local input state */}
         <SearchBar key={refreshTrigger} setSearchQuery={setSearchQuery} />
         <FilterRegion 
           selectedRegionLabel={selectedRegionLabel} 
@@ -75,7 +88,7 @@ const Home = () => {
         />
       </div>
       
-      {/* Content Area */}
+      {/* Country Grid or Empty State */}
       {(!isLoading && hasFetched && countries.length === 0) ? (
         <div className='flex justify-center items-center py-20'>
             <h2 className='font-nunitosans font-bold text-xl md:text-2xl text-gray-950 dark:text-white'>
@@ -85,18 +98,21 @@ const Home = () => {
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 sm:gap-10 md:grid-cols-3 md:gap-10 xl:grid-cols-4 gap-20 px-6 sm:px-10 md:px-12 lg:px-15 xl:px-25 '>
             {currentCountries.map((country, index) => (
-              <CountryCard key={country.cca3 || country.name.common || index} country={country} />
+              <CountryCard 
+                key={country.cca3 || country.name.common || index} 
+                country={country} 
+              />
             ))}
         </div>
       )}
 
-      {/* Pagination controls */}
+      {/* Pagination Controls */}
       {countries.length > 0 && (
         <div className='flex justify-center items-center gap-4 mt-10 pb-10'>
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className='px-8 py-2 font-bold text-gray-950 dark:text-white bg-white dark:bg-blue-900 shadow-md rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed transition-colors duration-300'
+              className='px-8 py-2 font-bold text-gray-950 dark:text-white bg-white dark:bg-blue-900 drop-shadow-2xl rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed transition-colors duration-300'
             >
               Prev
             </button>
@@ -106,7 +122,7 @@ const Home = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages || totalPages === 0}
-              className='px-8 py-2 font-bold text-gray-950 dark:text-white bg-white dark:bg-blue-900 shadow-md rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed transition-colors duration-300'
+              className='px-8 py-2 font-bold text-gray-950 dark:text-white bg-white dark:bg-blue-900 drop-shadow-2xl rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed transition-colors duration-300'
             >
               Next
             </button>
